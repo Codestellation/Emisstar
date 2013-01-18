@@ -2,7 +2,7 @@ using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
-    public class SynchronizationContextDispatcher : RuleBasedSubDispatcher
+    public class SynchronizationContextDispatcher : RuleBasedDispatcher
     {
         private readonly SynchronizationContext _synchronizationContext;
 
@@ -23,16 +23,16 @@ namespace Codestellation.Emisstar.Impl
         }
     }
 
-    public class SynchronizationContextDispatcher<TSynchornizationContext> : SynchronizationContextDispatcher
-        where TSynchornizationContext : SynchronizationContext, new()
+    public class SynchronizationContextDispatcher<TSynchronizationContext> : SynchronizationContextDispatcher
+        where TSynchronizationContext : SynchronizationContext, new()
     {
         public SynchronizationContextDispatcher()
-            : base(new TSynchornizationContext(), new Rule((message, handler) => true))
+            : base(new TSynchronizationContext(), new Rule((message, handler) => true))
         {
         }
 
         public SynchronizationContextDispatcher(params IDispatchRule[] rules)
-            : base(new TSynchornizationContext(), new Rule((message, handler) => true))
+            : base(new TSynchronizationContext(), new Rule((message, handler) => true))
         {
         }
     }

@@ -2,11 +2,11 @@
 
 namespace Codestellation.Emisstar.Impl
 {
-    public abstract class RuleBasedSubDispatcher : IDispatcher
+    public abstract class RuleBasedDispatcher : IDispatcher
     {
         private readonly IDispatchRule[] _rules;
 
-        protected RuleBasedSubDispatcher(params IDispatchRule[] rules)
+        protected RuleBasedDispatcher(params IDispatchRule[] rules)
         {
             _rules = rules;
         }

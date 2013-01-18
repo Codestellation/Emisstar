@@ -40,6 +40,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
@@ -50,7 +53,7 @@
     <Compile Include="Impl\IDispatcher.cs" />
     <Compile Include="Impl\Publisher.cs" />
     <Compile Include="Impl\Rule.cs" />
-    <Compile Include="Impl\RuleBasedSubDispatcher.cs" />
+    <Compile Include="Impl\RuleBasedDispatcher.cs" />
     <Compile Include="Impl\SimpleAssignee.cs" />
     <Compile Include="Impl\SimpleDispatcher.cs" />
     <Compile Include="Impl\SynchronizationContextDispatcher.cs" />

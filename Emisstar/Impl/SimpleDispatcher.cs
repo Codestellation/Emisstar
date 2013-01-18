@@ -1,6 +1,6 @@
 ﻿namespace Codestellation.Emisstar.Impl
 {
-    public class SimpleDispatcher : RuleBasedSubDispatcher
+    public class SimpleDispatcher : RuleBasedDispatcher
     {
         public SimpleDispatcher() : base(new Rule((message, handler) => true))
         {
