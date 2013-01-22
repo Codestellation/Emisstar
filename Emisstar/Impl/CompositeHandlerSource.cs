@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
     public class CompositeHandlerSource : IHandlerSource
     {
-        private readonly ISet<IHandlerSource> _sources;
-        private readonly ManualResetEventSlim _writeLock;
-        private readonly ManualResetEventSlim _readerLock;
+        private volatile IHandlerSource[] _sources;
+        private readonly object _latch;
+
 
         public CompositeHandlerSource() : this(Enumerable.Empty<IHandlerSource>())
         {
@@ -22,21 +21,17 @@ namespace Codestellation.Emisstar.Impl
             {
                 throw new ArgumentNullException("handlerSources");
             }
-
-            _sources = new HashSet<IHandlerSource>(handlerSources);
-            _writeLock = new ManualResetEventSlim(true);
-            _readerLock = new ManualResetEventSlim(true);
+            _sources = handlerSources.Distinct().ToArray();
+            _latch = new object();
         }
 
         public virtual IEnumerable<IHandler<TMessage>> ResolveHandlersFor<TMessage>()
         {
-            var copyOfSources = GetCopyOfSources();
-            return ResolveHandlersFromSources<TMessage>(copyOfSources);
+            return ResolveHandlersFromSources<TMessage>(_sources);
         }
 
         private static IEnumerable<IHandler<TMessage>> ResolveHandlersFromSources<TMessage>(IEnumerable<IHandlerSource> sources)
         {
-            //returns a copy of handlers for the sake of thread safety.
             var result = new HashSet<IHandler<TMessage>>();
             foreach (var handlerSource in sources)
             {
@@ -45,38 +40,35 @@ namespace Codestellation.Emisstar.Impl
             return result;
         }
 
-        private IEnumerable<IHandlerSource> GetCopyOfSources()
-        {
-            //returns a copy of contained sources for the sake of thread safety.
-            _writeLock.Wait();
-            _readerLock.Set();
-
-            var copyOfSources = new IHandlerSource[_sources.Count];
-            _sources.CopyTo(copyOfSources, 0);
-            
-            _readerLock.Reset();
-
-            return copyOfSources;
-        }
-
         public virtual void AddSource(IHandlerSource handlerSource)
         {
-            _writeLock.Reset();
-            _readerLock.Wait();
+            lock (_latch)
+            {
+                if (_sources.Contains(handlerSource))
+                {
+                    return;
+                }
 
-            _sources.Add(handlerSource);
-
-            _writeLock.Set();
+                var newSources = new IHandlerSource[_sources.Length + 1];
+                _sources.CopyTo(newSources,0);
+                newSources[_sources.Length] = handlerSource;
+                _sources = newSources;
+            }
         }
 
         public virtual void RemoveSource(IHandlerSource handlerSource)
         {
-            _writeLock.Reset();
-            _readerLock.Wait();
+            lock (_latch)
+            {
+                if (!_sources.Contains(handlerSource))
+                {
+                    return;
+                }
 
-            _sources.Remove(handlerSource);
-
-            _writeLock.Set();
+                var newSources = _sources.Except(new[] {handlerSource}).ToArray();
+                
+                _sources = newSources;
+            }
         }
     }
 }

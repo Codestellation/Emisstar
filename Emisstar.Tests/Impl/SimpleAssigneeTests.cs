@@ -7,7 +7,7 @@ using SharpTestsEx;
 namespace Codestellation.Emisstar.Tests.Impl
 {
     [TestFixture]
-    public class SimpleAssigneeTest
+    public class SimpleAssigneeTests
     {
         [Test]
         public void Should_return_empty_collection_if_no_handlers()

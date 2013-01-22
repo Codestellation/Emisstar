@@ -29,7 +29,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         {
             new Publisher(new SimpleAssignee(), new IDispatcher[] {null});
         }
-
+        
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_will_throw_if_handler_source_is_null()
