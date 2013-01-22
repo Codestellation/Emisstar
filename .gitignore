@@ -18,6 +18,8 @@
 *.log
 [Bb]in
 [Dd]ebug*/
+[Nn]uget*/
+[Bb]uild*/
 *.lib
 *.sbr
 obj/
@@ -28,3 +30,4 @@ _ReSharper*/
 code_drop*/
 build_output*/
 *.ncrunch*
+*.nupkg

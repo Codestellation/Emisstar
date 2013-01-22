@@ -12,11 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AC7EC3
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".misc", ".misc", "{7B35AB3E-7D01-4BB0-B758-89F5AF9245CE}"
-	ProjectSection(SolutionItems) = preProject
-		SolutionInfo.cs = SolutionInfo.cs
+		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Global

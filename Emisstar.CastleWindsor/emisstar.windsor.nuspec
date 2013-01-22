@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>Codestellation.Emisstar.Windsor</id>
+        <version>0.0</version>
+        <authors>Codestellation project</authors>
+        <owners>Jury Soldatenkov, Ilya Dubadenko</owners>
+        <licenseUrl>https://github.com/Codestellation/Emisstar/blob/master/license.txt</licenseUrl>
+        <projectUrl>https://github.com/Codestellation/Emisstar</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Simple extensible event publisher.</description>
+        <copyright>Copyright (c) 2013 Codestellation</copyright>
+        <tags>EventPublisher EventBroker</tags>
+        <dependencies>
+            <dependency id="Castle.Windsor" version="3.1.0" />
+            <dependency id="Codestellation.Emisstar" version="0.0.1" />
+        </dependencies>
+    </metadata>
+</package>
