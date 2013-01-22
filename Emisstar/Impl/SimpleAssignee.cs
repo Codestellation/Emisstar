@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
@@ -9,7 +10,7 @@ namespace Codestellation.Emisstar.Impl
     /// </summary>
     public class SimpleAssignee : IAssignee, IHandlerSource
     {
-        private readonly object _latch;
+        private readonly ReaderWriterLockSlim _latch;
         private readonly Dictionary<Type, ISet<object>> _storeHandlers;
         private readonly HashSet<object> _emptySet;
 
@@ -17,7 +18,7 @@ namespace Codestellation.Emisstar.Impl
         {
             _storeHandlers = new Dictionary<Type, ISet<object>>();
             _emptySet = new HashSet<object>();
-            _latch = new object();
+            _latch = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         }
 
         /// <summary>
@@ -30,23 +31,23 @@ namespace Codestellation.Emisstar.Impl
         {
             var interfaces = GetImplementedHandlers(handler);
 
-            if(interfaces.Length == 0) return;
-            //TODO Consider faster implementation using slim events.
-            lock(_latch)
+            if (interfaces.Length == 0) return;
+
+            _latch.EnterReadLock();
+
+            foreach (var @interface in interfaces)
             {
-                foreach (var @interface in interfaces)
+                ISet<object> handlers;
+                if (_storeHandlers.TryGetValue(@interface, out handlers))
                 {
-                    ISet<object> handlers;
-                    if(_storeHandlers.TryGetValue(@interface, out handlers))
-                    {
-                        handlers.Add(handler);
-                    }
-                    else
-                    {
-                        _storeHandlers[@interface] = new HashSet<object> { handler };
-                    }
+                    handlers.Add(handler);
+                }
+                else
+                {
+                    _storeHandlers[@interface] = new HashSet<object> { handler };
                 }
             }
+            _latch.ExitReadLock();
         }
 
         /// <summary>
@@ -60,27 +61,31 @@ namespace Codestellation.Emisstar.Impl
             var interfaces = GetImplementedHandlers(handler);
             if (interfaces.Length == 0) return;
 
-            lock (_latch)
+            _latch.EnterWriteLock();
+
+            foreach (var @interface in interfaces)
             {
-                foreach (var @interface in interfaces)
+                ISet<object> handlers;
+                if (_storeHandlers.TryGetValue(@interface, out handlers))
                 {
-                    ISet<object> handlers;
-                    if (_storeHandlers.TryGetValue(@interface, out handlers))
-                    {
-                        handlers.Remove(handler);
-                    }
+                    handlers.Remove(handler);
                 }
             }
+
+            _latch.ExitWriteLock();
         }
 
         public virtual IEnumerable<IHandler<TMessage>> ResolveHandlersFor<TMessage>()
         {
             ISet<object> handlers;
-            lock(_latch)
-            {
-                _storeHandlers.TryGetValue(typeof (IHandler<TMessage>), out handlers);
-                handlers = new HashSet<object>(handlers ?? _emptySet);
-            }
+
+            _latch.EnterReadLock();
+
+            _storeHandlers.TryGetValue(typeof(IHandler<TMessage>), out handlers);
+            handlers = new HashSet<object>(handlers ?? _emptySet);
+
+            _latch.ExitReadLock();
+
             return handlers.Cast<IHandler<TMessage>>();
         }
 
@@ -88,7 +93,7 @@ namespace Codestellation.Emisstar.Impl
         {
             var interfaces = handler.GetType().FindInterfaces(
                 (@interface, noMatter) => @interface.IsGenericType &&
-                                          @interface.GetGenericTypeDefinition() == typeof (IHandler<>), null);
+                                          @interface.GetGenericTypeDefinition() == typeof(IHandler<>), null);
             return interfaces;
         }
     }
