@@ -30,7 +30,7 @@ namespace Codestellation.Emisstar.Impl
 
                 if (dispatcher == null)
                 {
-                    //TODO Log here something meainingful
+                    //TODO Log here something meaningful
                     return;
                 }
                 
