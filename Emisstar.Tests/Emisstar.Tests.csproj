@@ -42,6 +42,21 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\packages\Castle.Windsor.3.1.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="Codestellation.DarkFlow, Version=0.1.46.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codestellation.DarkFlow.0.1.46\lib\net40\Codestellation.DarkFlow.dll</HintPath>
+    </Reference>
+    <Reference Include="Esent.Collections, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ManagedEsent.1.6\lib\net20\Esent.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Esent.Interop, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ManagedEsent.1.6\lib\net20\Esent.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -60,6 +75,7 @@
     </Compile>
     <Compile Include="Impl\AnotherMessage.cs" />
     <Compile Include="Impl\CompositeHandlerSourceTests.cs" />
+    <Compile Include="Impl\ExecutorDispatcherTests.cs" />
     <Compile Include="Impl\MultiHandler.cs" />
     <Compile Include="Impl\OrderedAttributeRuleTests.cs" />
     <Compile Include="Impl\PublisherTests.cs" />

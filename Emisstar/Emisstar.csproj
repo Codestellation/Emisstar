@@ -63,6 +63,7 @@
     <Compile Include="Impl\IDispatchRule.cs" />
     <Compile Include="Impl\IHandlerSource.cs" />
     <Compile Include="Impl\IDispatcher.cs" />
+    <Compile Include="Impl\OrderedDispatcher.cs" />
     <Compile Include="Impl\OrderedRule.cs" />
     <Compile Include="Impl\Publisher.cs" />
     <Compile Include="Impl\Rule.cs" />
