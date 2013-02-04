@@ -63,6 +63,7 @@
     <Compile Include="Impl\IDispatchRule.cs" />
     <Compile Include="Impl\IHandlerSource.cs" />
     <Compile Include="Impl\IDispatcher.cs" />
+    <Compile Include="Impl\OrderedRule.cs" />
     <Compile Include="Impl\Publisher.cs" />
     <Compile Include="Impl\Rule.cs" />
     <Compile Include="Impl\RuleBasedDispatcher.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Impl\SynchronizationContextDispatcher.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="IHandler.cs" />
+    <Compile Include="OrderedExecutionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Testing\TestHandler.cs" />
     <Compile Include="Testing\TestPublisher.cs" />

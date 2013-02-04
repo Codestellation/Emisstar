@@ -61,6 +61,7 @@
     <Compile Include="Impl\AnotherMessage.cs" />
     <Compile Include="Impl\CompositeHandlerSourceTests.cs" />
     <Compile Include="Impl\MultiHandler.cs" />
+    <Compile Include="Impl\OrderedAttributeRuleTests.cs" />
     <Compile Include="Impl\PublisherTests.cs" />
     <Compile Include="Impl\SimpleAssigneeTests.cs" />
     <Compile Include="Impl\SimpleDispatcherTests.cs" />
