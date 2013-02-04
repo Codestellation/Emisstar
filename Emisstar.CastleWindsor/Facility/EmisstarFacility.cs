@@ -36,8 +36,12 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
         {
             Kernel.Register(
                 Component
-                .For<IDispatcher>()
-                .ImplementedBy<SimpleDispatcher>());
+                    .For<IDispatcher>()
+                    .ImplementedBy<OrderedDispatcher>(),
+
+                Component
+                    .For<IDispatcher>()
+                    .ImplementedBy<SimpleDispatcher>());
         }
 
         protected virtual void RegisterPublisher()

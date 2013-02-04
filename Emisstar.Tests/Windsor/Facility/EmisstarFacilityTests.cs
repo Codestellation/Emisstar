@@ -1,5 +1,7 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Codestellation.DarkFlow;
+using Codestellation.DarkFlow.Execution;
 using Codestellation.Emisstar.CastleWindsor.Facility;
 using NUnit.Framework;
 
@@ -24,6 +26,7 @@ namespace Codestellation.Emisstar.Tests.Windsor.Facility
             var handler = new TestHandler();
 
             _windsor.Resolve<IAssignee>().Subscribe(handler);
+            _windsor.Register(Component.For<IExecutor>().ImplementedBy<SynchronousExecutor>());
             _windsor.Register(Component.For<IHandler<Message>>().ImplementedBy<TestHandler>());
 
             var publisher = _windsor.Resolve<IPublisher>();
