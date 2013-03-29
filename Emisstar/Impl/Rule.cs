@@ -9,8 +9,11 @@ namespace Codestellation.Emisstar.Impl
         public Rule(Func<object, object, bool> rule)
         {
             _rule = rule;
-            if(rule == null)
+            
+            if (rule == null)
+            {
                 throw new ArgumentNullException("rule");
+            }
         }
 
         public bool CanDispatch(object message, object handler)

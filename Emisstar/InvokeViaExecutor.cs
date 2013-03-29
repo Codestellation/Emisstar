@@ -3,7 +3,7 @@
 namespace Codestellation.Emisstar
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class OrderedExecutionAttribute : Attribute
+    public class InvokeViaExecutor : Attribute
     {
          
     }

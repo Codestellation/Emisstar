@@ -37,7 +37,7 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             Kernel.Register(
                 Component
                     .For<IDispatcher>()
-                    .ImplementedBy<OrderedDispatcher>(),
+                    .ImplementedBy<ExecutorDispatcher>(),
 
                 Component
                     .For<IDispatcher>()

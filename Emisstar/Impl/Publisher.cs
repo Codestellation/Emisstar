@@ -10,12 +10,20 @@ namespace Codestellation.Emisstar.Impl
 
         public Publisher(IHandlerSource handlerSource, IDispatcher[] dispatchers)
         {
-            if(handlerSource == null) 
+            if (handlerSource == null)
+            {
                 throw new ArgumentNullException("handlerSource");
-            if(dispatchers == null)
+            }
+            
+            if (dispatchers == null)
+            {
                 throw new ArgumentNullException("dispatchers");
-            if(dispatchers.Any(x => ReferenceEquals(x, null)))
+            }
+
+            if (dispatchers.Any(x => ReferenceEquals(x, null)))
+            {
                 throw new ArgumentException("At least one of dispatches is null.", "dispatchers");
+            }
 
             _handlerSource = handlerSource;
             _dispatchers = dispatchers;

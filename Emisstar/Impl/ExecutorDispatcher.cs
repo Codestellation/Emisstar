@@ -4,18 +4,18 @@ using Codestellation.DarkFlow;
 
 namespace Codestellation.Emisstar.Impl
 {
-    public class OrderedDispatcher : RuleBasedDispatcher
+    public class ExecutorDispatcher : RuleBasedDispatcher
     {
-        private readonly IExecutor _orderedExecutor;
+        private readonly IExecutor _executor;
 
-        public OrderedDispatcher(IExecutor orderedExecutor): base(new OrderedRule())
+        public ExecutorDispatcher(IExecutor executor): base(new InvokeUsingExecutorRule())
         {
-            if (orderedExecutor == null)
+            if (executor == null)
             {
-                throw new ArgumentNullException("orderedExecutor");
+                throw new ArgumentNullException("executor");
             }
 
-            _orderedExecutor = orderedExecutor;
+            _executor = executor;
         }
 
         private class InvokeHandlerTask<TMessage> : ITask
@@ -40,7 +40,7 @@ namespace Codestellation.Emisstar.Impl
         {
             var task = new InvokeHandlerTask<TMessage>(message, handler);
 
-            _orderedExecutor.Execute(task);
+            _executor.Execute(task);
         }
     }
 }

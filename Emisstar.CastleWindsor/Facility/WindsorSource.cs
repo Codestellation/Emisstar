@@ -12,7 +12,9 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
         public WindsorSource(IKernel kernel)
         {
             if (kernel == null)
+            {
                 throw new ArgumentNullException("kernel");
+            }
 
             _kernel = kernel;
         }

@@ -6,11 +6,11 @@ using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
-    public class OrderedRule : IDispatchRule
+    public class InvokeUsingExecutorRule : IDispatchRule
     {
         private readonly Dictionary<Type, bool> _messageTypes;
 
-        public OrderedRule()
+        public InvokeUsingExecutorRule()
         {
             _messageTypes = new Dictionary<Type, bool>();
         }
@@ -30,7 +30,7 @@ namespace Codestellation.Emisstar.Impl
 
             if(!_messageTypes.TryGetValue(message.GetType(), out result))
             {
-                result = message.GetType().GetCustomAttributes(typeof(OrderedExecutionAttribute), false).Any();
+                result = message.GetType().GetCustomAttributes(typeof(InvokeViaExecutor), false).Any();
                 _messageTypes[message.GetType()] = result;
             }
 
