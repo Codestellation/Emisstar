@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
     public class CompositeHandlerSource : IHandlerSource
     {
-        private volatile IHandlerSource[] _sources;
+        private IHandlerSource[] _sources;
         private readonly object _latch;
-
 
         public CompositeHandlerSource() : this(Enumerable.Empty<IHandlerSource>())
         {
-            
         }
 
         public CompositeHandlerSource(IEnumerable<IHandlerSource> handlerSources)
@@ -52,7 +51,8 @@ namespace Codestellation.Emisstar.Impl
                 var newSources = new IHandlerSource[_sources.Length + 1];
                 _sources.CopyTo(newSources,0);
                 newSources[_sources.Length] = handlerSource;
-                _sources = newSources;
+
+                Interlocked.Exchange(ref _sources, newSources);
             }
         }
 
@@ -66,8 +66,8 @@ namespace Codestellation.Emisstar.Impl
                 }
 
                 var newSources = _sources.Except(new[] {handlerSource}).ToArray();
-                
-                _sources = newSources;
+
+                Interlocked.Exchange(ref _sources, newSources);
             }
         }
     }
