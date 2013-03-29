@@ -28,8 +28,8 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
                     .For<IHandlerSource>()
                     .ImplementedBy<WindsorSource>(),
                 Component
-                    .For<IAssignee, IHandlerSource>()
-                    .ImplementedBy<SimpleAssignee>());
+                    .For<ISubscriber, IHandlerSource>()
+                    .ImplementedBy<SimpleSubscriber>());
         }
 
         protected virtual void RegisterDispatcher()

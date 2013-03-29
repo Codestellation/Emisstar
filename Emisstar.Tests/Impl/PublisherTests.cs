@@ -10,7 +10,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Publish_will_send_the_message_to_listner()
         {
-            var assignee = new SimpleAssignee();
+            var assignee = new SimpleSubscriber();
             var dispatcher = new SimpleDispatcher();
             var handler = new TestHandler();
             var message = new TestMessage();
@@ -27,7 +27,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [ExpectedException(typeof(ArgumentException))]
         public void Constructor_will_throw_if_dispatcher_is_null()
         {
-            new Publisher(new SimpleAssignee(), new IDispatcher[] {null});
+            new Publisher(new SimpleSubscriber(), new IDispatcher[] {null});
         }
         
         [Test]

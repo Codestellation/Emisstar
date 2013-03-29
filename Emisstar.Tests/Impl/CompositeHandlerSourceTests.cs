@@ -9,16 +9,16 @@ namespace Codestellation.Emisstar.Tests.Impl
     public class CompositeHandlerSourceTests
     {
         private CompositeHandlerSource _compositeSource;
-        private SimpleAssignee _firstSource;
-        private SimpleAssignee _secondSource;
+        private SimpleSubscriber _firstSource;
+        private SimpleSubscriber _secondSource;
 
         [SetUp]
         public void SetUp()
         {
             _compositeSource = new CompositeHandlerSource();
 
-            _firstSource = new SimpleAssignee();
-            _secondSource = new SimpleAssignee();
+            _firstSource = new SimpleSubscriber();
+            _secondSource = new SimpleSubscriber();
 
             _compositeSource.AddSource(_firstSource);
             _compositeSource.AddSource(_secondSource);

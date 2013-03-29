@@ -12,7 +12,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Should_return_empty_collection_if_no_handlers()
         {
-            var handlers = new SimpleAssignee().ResolveHandlersFor<TestMessage>();
+            var handlers = new SimpleSubscriber().ResolveHandlersFor<TestMessage>();
 
             Assert.That(handlers, Is.Empty);
         }
@@ -20,7 +20,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Subscribe_adds_it_to_the_source_so_it_can_be_resolved()
         {
-            var assignee = new SimpleAssignee();
+            var assignee = new SimpleSubscriber();
             var handler = new TestHandler();
             assignee.Subscribe(handler);
 
@@ -32,7 +32,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Subscribe_will_not_add_same_object_twice()
         {
-            var assignee = new SimpleAssignee();
+            var assignee = new SimpleSubscriber();
             var handler = new TestHandler();
             assignee.Subscribe(handler);
             assignee.Subscribe(handler);
@@ -46,7 +46,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Unsubscribe_removes_it_from_source_so_it_could_be_resolved()
         {
-            var assignee = new SimpleAssignee();
+            var assignee = new SimpleSubscriber();
             var handler = new TestHandler();
             assignee.Subscribe(handler);
             assignee.Unsubscribe(handler);
@@ -59,7 +59,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Returns_same_object_for_different_handlers()
         {
-            var assignee = new SimpleAssignee();
+            var assignee = new SimpleSubscriber();
             var handler = new MultiHandler();
 
             assignee.Subscribe(handler);
@@ -76,7 +76,7 @@ namespace Codestellation.Emisstar.Tests.Impl
         [Test]
         public void Unsubscribe_if_not_subscribed_will_be_skipped_silently()
         {
-            new SimpleAssignee().Unsubscribe(new TestHandler());
+            new SimpleSubscriber().Unsubscribe(new TestHandler());
         }
     }
 }

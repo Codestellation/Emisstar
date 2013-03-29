@@ -6,15 +6,15 @@ using System.Threading;
 namespace Codestellation.Emisstar.Impl
 {
     /// <summary>
-    /// Simple thread-safe implementation of <see cref="IAssignee"/>. It serves as <see cref="IHandlerSource"/> for a <see cref="Publisher"/>.
+    /// Simple thread-safe implementation of <see cref="ISubscriber"/>. It serves as <see cref="IHandlerSource"/> for a <see cref="Publisher"/>.
     /// </summary>
-    public class SimpleAssignee : IAssignee, IHandlerSource
+    public class SimpleSubscriber : ISubscriber, IHandlerSource
     {
         private readonly ReaderWriterLockSlim _latch;
         private readonly Dictionary<Type, ISet<object>> _storeHandlers;
         private readonly HashSet<object> _emptySet;
 
-        public SimpleAssignee()
+        public SimpleSubscriber()
         {
             _storeHandlers = new Dictionary<Type, ISet<object>>();
             _emptySet = new HashSet<object>();

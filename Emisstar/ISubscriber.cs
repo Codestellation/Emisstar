@@ -3,7 +3,7 @@
     /// <summary>
     /// Can subscribe and unsubscribe handlers.
     /// </summary>
-    public interface IAssignee
+    public interface ISubscriber
     {
         //TODO Consider return IDisposable to unsubscribe from events.
         /// <summary>

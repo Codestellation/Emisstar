@@ -25,7 +25,7 @@ namespace Codestellation.Emisstar.Tests.Windsor.Facility
         {
             var handler = new TestHandler();
 
-            _windsor.Resolve<IAssignee>().Subscribe(handler);
+            _windsor.Resolve<ISubscriber>().Subscribe(handler);
             _windsor.Register(Component.For<IExecutor>().ImplementedBy<SynchronousExecutor>());
             _windsor.Register(Component.For<IHandler<Message>>().ImplementedBy<TestHandler>());
 

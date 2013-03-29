@@ -4,21 +4,21 @@ namespace Codestellation.Emisstar.Testing
 {
     public class TestPublisher : Publisher
     {
-        private readonly IAssignee _assignee;
+        private readonly ISubscriber _subscriber;
 
-        public IAssignee GetAssignee()
+        public ISubscriber GetAssignee()
         {
-            return _assignee;
+            return _subscriber;
         }
 
-        public TestPublisher() :this(new SimpleAssignee(), new SimpleDispatcher())
+        public TestPublisher() :this(new SimpleSubscriber(), new SimpleDispatcher())
         {
             
         }
 
-        private TestPublisher(IAssignee assignee, IDispatcher dispatcher) : base((IHandlerSource)assignee, new[] {dispatcher})
+        private TestPublisher(ISubscriber subscriber, IDispatcher dispatcher) : base((IHandlerSource)subscriber, new[] {dispatcher})
         {
-            _assignee = assignee;
+            _subscriber = subscriber;
         }
 
         public TestHandler<TMessage> RegisterTestHandler<TMessage>()
