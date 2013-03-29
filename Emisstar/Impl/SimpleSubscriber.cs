@@ -13,12 +13,14 @@ namespace Codestellation.Emisstar.Impl
         private readonly ReaderWriterLockSlim _latch;
         private readonly Dictionary<Type, ISet<object>> _storeHandlers;
         private readonly HashSet<object> _emptySet;
+        private readonly Dictionary<Type, Type[]> _typesCache;
 
         public SimpleSubscriber()
         {
             _storeHandlers = new Dictionary<Type, ISet<object>>();
             _emptySet = new HashSet<object>();
             _latch = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+            _typesCache = new Dictionary<Type, Type[]>();
         }
 
         /// <summary>
@@ -89,12 +91,18 @@ namespace Codestellation.Emisstar.Impl
             return handlers.Cast<IHandler<TMessage>>();
         }
 
-        private static Type[] GetImplementedHandlers(object handler)
+        private Type[] GetImplementedHandlers(object handler)
         {
-            var interfaces = handler.GetType().FindInterfaces(
-                (@interface, noMatter) => @interface.IsGenericType &&
-                                          @interface.GetGenericTypeDefinition() == typeof(IHandler<>), null);
-            return interfaces;
+            Type[] implementedHandlers;
+
+            if (!_typesCache.TryGetValue(handler.GetType(), out implementedHandlers))
+            {
+                implementedHandlers = handler.GetType().FindInterfaces(
+                    (@interface, noMatter) => @interface.IsGenericType &&
+                                              @interface.GetGenericTypeDefinition() == typeof(IHandler<>), null);
+            }
+
+            return implementedHandlers;
         }
     }
 }
