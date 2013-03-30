@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Codestellation.DarkFlow">
-      <HintPath>..\packages\Codestellation.DarkFlow.0.1.46\lib\net40\Codestellation.DarkFlow.dll</HintPath>
+      <HintPath>..\packages\Codestellation.DarkFlow.0.2.2\lib\net40\Codestellation.DarkFlow.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Collections">
       <HintPath>..\packages\ManagedEsent.1.6\lib\net20\Esent.Collections.dll</HintPath>

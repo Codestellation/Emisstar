@@ -42,8 +42,8 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\packages\Castle.Windsor.3.1.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="Codestellation.DarkFlow, Version=0.1.46.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Codestellation.DarkFlow.0.1.46\lib\net40\Codestellation.DarkFlow.dll</HintPath>
+    <Reference Include="Codestellation.DarkFlow">
+      <HintPath>..\packages\Codestellation.DarkFlow.0.2.2\lib\net40\Codestellation.DarkFlow.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Collections, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedEsent.1.6\lib\net20\Esent.Collections.dll</HintPath>
