@@ -30,7 +30,7 @@ namespace Codestellation.Emisstar.Impl
 
             if(!_messageTypes.TryGetValue(message.GetType(), out result))
             {
-                result = message.GetType().GetCustomAttributes(typeof(InvokeViaExecutor), false).Any();
+                result = message.GetType().GetCustomAttributes(typeof(InvokeViaExecutorAttribute), false).Any();
                 _messageTypes[message.GetType()] = result;
             }
 
