@@ -10,7 +10,7 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
         {
             AddHandlersResolver();
             RegisterHandlerSources();
-            RegisterDispatcher();
+            RegisterDispatchers();
             RegisterPublisher();
         }
 
@@ -23,25 +23,30 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
         {
             Kernel.Register(
                 Component
-                    .For<CompositeHandlerSource, IHandlerSource>(),
+                    .For<CompositeHandlerSource, IHandlerSource>()
+                    .LifestyleSingleton(),
                 Component
                     .For<IHandlerSource>()
-                    .ImplementedBy<WindsorSource>(),
+                    .ImplementedBy<WindsorSource>()
+                    .LifestyleSingleton(),
                 Component
                     .For<ISubscriber, IHandlerSource>()
-                    .ImplementedBy<SimpleSubscriber>());
+                    .ImplementedBy<SimpleSubscriber>()
+                    .LifestyleSingleton());
         }
 
-        protected virtual void RegisterDispatcher()
+        protected virtual void RegisterDispatchers()
         {
             Kernel.Register(
                 Component
                     .For<IDispatcher>()
-                    .ImplementedBy<ExecutorDispatcher>(),
+                    .ImplementedBy<ExecutorDispatcher>()
+                    .LifestyleSingleton(),
 
                 Component
                     .For<IDispatcher>()
-                    .ImplementedBy<SimpleDispatcher>());
+                    .ImplementedBy<SimpleDispatcher>()
+                    .LifestyleSingleton());
         }
 
         protected virtual void RegisterPublisher()
@@ -49,7 +54,8 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             Kernel.Register(
                 Component
                     .For<IPublisher>()
-                    .ImplementedBy<Publisher>());
+                    .ImplementedBy<Publisher>()
+                    .LifestyleSingleton());
         }
     }
 }
