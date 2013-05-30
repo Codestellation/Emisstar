@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
 
 namespace Codestellation.Emisstar.Impl
 {
@@ -7,6 +11,13 @@ namespace Codestellation.Emisstar.Impl
     {
         private readonly IHandlerSource _handlerSource;
         private readonly IDispatcher[] _dispatchers;
+        private readonly MethodInfo _method;
+        private static Dictionary<Type, Action<object>> _invokersCache;
+
+        static Publisher()
+        {
+            _invokersCache = new Dictionary<Type, Action<object>>();
+        }
 
         public Publisher(IHandlerSource handlerSource, IDispatcher[] dispatchers)
         {
@@ -27,9 +38,71 @@ namespace Codestellation.Emisstar.Impl
 
             _handlerSource = handlerSource;
             _dispatchers = dispatchers;
+            _method = typeof (Publisher).GetMethod("InternalPublish", BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
-        public virtual void Publish<TMessage>(TMessage message)
+
+        public void Publish(object message)
+        {
+            Action<object> invoker;
+            var messageType = message.GetType();
+            if (!_invokersCache.TryGetValue(messageType, out invoker))
+            {
+                invoker = BuildAndCacheInvoker(messageType);
+            }
+            invoker(message);
+        }
+
+        private Action<object> BuildAndCacheInvoker(Type messageType)
+        {
+            Action<object> result = null;
+            Dictionary<Type, Action<object>> original;
+            Dictionary<Type, Action<object>> cache;
+            do
+            {
+                cache = _invokersCache;
+                Thread.MemoryBarrier();
+                
+                Action<object> cached;
+
+                //May be another thread filled cache already.
+                if (cache.TryGetValue(messageType, out cached))
+                {
+                    return cached;
+                }
+
+                //Do not build expression twice during looping. 
+                if (result == null)
+                {
+                    result = BuildExpression(messageType);
+                }
+
+                //Preserving original cache. 
+                var newCache = new Dictionary<Type, Action<object>>(cache);
+
+                original = Interlocked.CompareExchange(ref _invokersCache, newCache, cache);
+
+            } while (original != cache);
+            return result;
+        }
+
+        private Action<object> BuildExpression(Type messageType)
+        {
+            var parameter = Expression.Parameter(typeof (object));
+
+            var castedArgument = Expression.Convert(parameter, messageType);
+            var instance = Expression.Constant(this);
+            var method = _method.MakeGenericMethod(messageType);
+
+            var internalPublish = Expression.Call(instance, method, castedArgument);
+
+            var lambda = Expression.Lambda<Action<object>>(internalPublish, parameter);
+            
+            return lambda.Compile();
+        }
+
+        //This method is used bu
+        private void InternalPublish<TMessage>(TMessage message)
         {
             foreach (var handler in _handlerSource.ResolveHandlersFor<TMessage>())
             {

@@ -8,8 +8,7 @@
         /// <summary>
         /// Publishes a message to subscribed handlers.
         /// </summary>
-        /// <typeparam name="TMessage">Message type.</typeparam>
         /// <param name="message">An instance of message.</param>
-        void Publish<TMessage>(TMessage message);
+        void Publish(object message);
     }
 }
