@@ -72,13 +72,10 @@ namespace Codestellation.Emisstar.Impl
                 }
 
                 //Do not build expression twice during looping. 
-                if (result == null)
-                {
-                    result = BuildExpression(messageType);
-                }
+                result = result ?? BuildExpression(messageType);
 
-                //Preserving original cache. 
-                var newCache = new Dictionary<Type, Action<object>>(cache);
+                //Adds new expression to cache preserving already cached expressions. 
+                var newCache = new Dictionary<Type, Action<object>>(cache) {{messageType, result}};
 
                 original = Interlocked.CompareExchange(ref _invokersCache, newCache, cache);
 
@@ -101,7 +98,7 @@ namespace Codestellation.Emisstar.Impl
             return lambda.Compile();
         }
 
-        //This method is used bu
+        //This method is used by expression calls;
         private void InternalPublish<TMessage>(TMessage message)
         {
             foreach (var handler in _handlerSource.ResolveHandlersFor<TMessage>())
