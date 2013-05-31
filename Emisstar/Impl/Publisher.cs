@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -42,7 +43,23 @@ namespace Codestellation.Emisstar.Impl
         }
 
 
-        public void Publish(object message)
+        public void Publish(params object[] messages)
+        {
+            foreach (var message in messages)
+            {
+                Publish(message);
+            }
+        }
+
+        public void Publish(IEnumerable messages)
+        {
+            foreach (var message in messages)
+            {
+                Publish(message);
+            }
+        }
+
+        private void Publish(object message)
         {
             Action<object> invoker;
             var messageType = message.GetType();
@@ -97,7 +114,7 @@ namespace Codestellation.Emisstar.Impl
             
             return lambda.Compile();
         }
-
+        
         //This method is used by expression calls;
         private void InternalPublish<TMessage>(TMessage message)
         {
@@ -115,5 +132,7 @@ namespace Codestellation.Emisstar.Impl
                 dispatcher.Invoke(message, handler);
             }
         }
+
+        
     }
 }

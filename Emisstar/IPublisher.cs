@@ -1,4 +1,6 @@
-﻿namespace Codestellation.Emisstar
+﻿using System.Collections;
+
+namespace Codestellation.Emisstar
 {
     /// <summary>
     /// Publisher of events.
@@ -6,9 +8,15 @@
     public interface IPublisher
     {
         /// <summary>
-        /// Publishes a message to subscribed handlers.
+        /// Publish messages to subscribed handlers.
         /// </summary>
-        /// <param name="message">An instance of message.</param>
-        void Publish(object message);
+        /// <param name="messages">Messages to deliver.</param>
+        void Publish(params object[] messages);
+
+        /// <summary>
+        /// Publish messages to subscribed handlers.
+        /// </summary>
+        /// <param name="messages">Messages to deliver.</param>
+        void Publish(IEnumerable messages);
     }
 }
