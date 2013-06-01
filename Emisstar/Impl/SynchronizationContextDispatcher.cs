@@ -17,7 +17,7 @@ namespace Codestellation.Emisstar.Impl
             _synchronizationContext = synchronizationContext;
         }
 
-        protected override void IntervalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
+        protected override void InternalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
         {
             _synchronizationContext.Post(x => handler.Handle(message), null);
         }

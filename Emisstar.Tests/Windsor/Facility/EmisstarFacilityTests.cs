@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System.Linq;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Codestellation.DarkFlow;
 using Codestellation.DarkFlow.Execution;
@@ -7,34 +8,52 @@ using NUnit.Framework;
 
 namespace Codestellation.Emisstar.Tests.Windsor.Facility
 {
-    //TODO Needs actualization
     [TestFixture]
     public class EmisstarFacilityTests
     {
-        private WindsorContainer _windsor;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _windsor = new WindsorContainer();
-            _windsor.AddFacility<EmisstarFacility>();
-        }
-
         [Test]
         public void Facility_configured_to_send_message_to_resolved_handlers()
         {
+            var windsor = new WindsorContainer();
+            windsor.AddFacility<EmisstarFacility>();
+
             var handler = new TestHandler();
 
-            _windsor.Resolve<ISubscriber>().Subscribe(handler);
-            _windsor.Register(Component.For<IExecutor>().ImplementedBy<SynchronousExecutor>());
-            _windsor.Register(Component.For<IHandler<Message>>().ImplementedBy<TestHandler>());
+            windsor.Resolve<ISubscriber>().Subscribe(handler);
+            windsor.Register(Component.For<IHandler<Message>>().ImplementedBy<TestHandler>());
 
-            var publisher = _windsor.Resolve<IPublisher>();
+            var publisher = windsor.Resolve<IPublisher>();
             var message = new Message();
 
             publisher.Publish(message);
 
             Assert.That(handler.Message, Is.SameAs(message));
+        }
+
+        [Test]
+        public void Integrates_with_darkflow()
+        {
+            var windsor = new WindsorContainer();
+            var executor = new ExplicitExecutor();
+            windsor.Register(
+                Component
+                    .For<IExecutor>()
+                    .Instance(executor));
+            
+            windsor.AddFacility<EmisstarFacility>(x => x.UseDarkFlowDispatcher());
+
+            var handler = new TestHandler();
+            windsor.Register(
+                Component
+                .For<IHandler<Message>>()
+                .Instance(handler));
+
+            var publisher = windsor.Resolve<IPublisher>();
+            var message = new Message();
+
+            publisher.Publish(message);
+
+            Assert.That(executor.EnqueuedTasks.Any());
         }
     }
 }

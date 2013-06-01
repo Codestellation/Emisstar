@@ -12,7 +12,7 @@
             
         }
 
-        protected override void IntervalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
+        protected override void InternalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
         {
             handler.Handle(message);
         }

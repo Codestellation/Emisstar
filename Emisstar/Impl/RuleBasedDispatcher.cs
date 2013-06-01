@@ -18,9 +18,9 @@ namespace Codestellation.Emisstar.Impl
 
         public virtual void Invoke<TMessage>(TMessage message, IHandler<TMessage> handler)
         {
-            IntervalInvoke(message, handler);
+            InternalInvoke(message, handler);
         }
 
-        protected abstract void IntervalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler);
+        protected abstract void InternalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler);
     }
 }

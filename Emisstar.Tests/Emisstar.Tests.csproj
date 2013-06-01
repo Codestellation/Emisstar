@@ -43,7 +43,11 @@
       <HintPath>..\packages\Castle.Windsor.3.1.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="Codestellation.DarkFlow">
-      <HintPath>..\packages\Codestellation.DarkFlow.0.2.12\lib\net40\Codestellation.DarkFlow.dll</HintPath>
+      <HintPath>..\packages\Codestellation.DarkFlow.0.2.49\lib\net40\Codestellation.DarkFlow.dll</HintPath>
+    </Reference>
+    <Reference Include="Codestellation.Emisstar, Version=0.0.25.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Debug\Codestellation.Emisstar.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Collections, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedEsent.1.6\lib\net20\Esent.Collections.dll</HintPath>
@@ -75,9 +79,7 @@
     </Compile>
     <Compile Include="Impl\AnotherMessage.cs" />
     <Compile Include="Impl\CompositeHandlerSourceTests.cs" />
-    <Compile Include="Impl\ExecutorDispatcherTests.cs" />
     <Compile Include="Impl\MultiHandler.cs" />
-    <Compile Include="Impl\OrderedAttributeRuleTests.cs" />
     <Compile Include="Impl\PublisherTests.cs" />
     <Compile Include="Impl\SimpleAssigneeTests.cs" />
     <Compile Include="Impl\SimpleDispatcherTests.cs" />
@@ -100,10 +102,6 @@
     <ProjectReference Include="..\Emisstar.CastleWindsor\Emisstar.CastleWindsor.csproj">
       <Project>{F484E1F4-0BFF-4023-BA69-129F19D4F2B8}</Project>
       <Name>Emisstar.CastleWindsor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Emisstar\Emisstar.csproj">
-      <Project>{EE246FD5-222B-43F8-BE54-B3FD6A371240}</Project>
-      <Name>Emisstar</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

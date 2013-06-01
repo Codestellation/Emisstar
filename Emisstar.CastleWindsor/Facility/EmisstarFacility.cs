@@ -1,17 +1,31 @@
-﻿using Castle.MicroKernel.Facilities;
+﻿using System.Collections.Generic;
+using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
+using Codestellation.Emisstar.DarkFlowIntegration;
 using Codestellation.Emisstar.Impl;
 
 namespace Codestellation.Emisstar.CastleWindsor.Facility
 {
     public class EmisstarFacility : AbstractFacility
     {
+        private List<ComponentRegistration<IDispatcher>> _dispatcherRegistrations;
+
+        public EmisstarFacility()
+        {
+            _dispatcherRegistrations = new List<ComponentRegistration<IDispatcher>>();
+        }
         protected override void Init()
         {
             AddHandlersResolver();
             RegisterHandlerSources();
             RegisterDispatchers();
             RegisterPublisher();
+            Clean();
+        }
+
+        private void Clean()
+        {
+            _dispatcherRegistrations = null;
         }
 
         private void AddHandlersResolver()
@@ -37,16 +51,13 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
 
         protected virtual void RegisterDispatchers()
         {
-            Kernel.Register(
-                Component
-                    .For<IDispatcher>()
-                    .ImplementedBy<ExecutorDispatcher>()
-                    .LifestyleSingleton(),
-
+            _dispatcherRegistrations.Add(
                 Component
                     .For<IDispatcher>()
                     .ImplementedBy<SimpleDispatcher>()
                     .LifestyleSingleton());
+            
+            Kernel.Register(_dispatcherRegistrations.ToArray());
         }
 
         protected virtual void RegisterPublisher()
@@ -56,6 +67,19 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
                     .For<IPublisher>()
                     .ImplementedBy<Publisher>()
                     .LifestyleSingleton());
+        }
+
+        public EmisstarFacility UseDarkFlowDispatcher()
+        {
+            var asmBuilder = new IntegrationAssemblyBuilder();
+
+            _dispatcherRegistrations.Add(
+                Component
+                    .For<IDispatcher>()
+                    .ImplementedBy(asmBuilder.GeneratedDispatcherType)
+                    .LifestyleSingleton());
+
+            return this;
         }
     }
 }

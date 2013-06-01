@@ -11,8 +11,5 @@
     <description>Simple extensible event publisher.</description>
     <copyright>Copyright (c) 2013 Codestellation</copyright>
     <tags>EventPublisher EventBroker</tags>
-      <dependencies>
-          <dependency id="Codestellation.DarkFlow" version="0.1.46" />
-      </dependencies>
   </metadata>
 </package>
