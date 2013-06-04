@@ -11,13 +11,13 @@ namespace Codestellation.Emisstar.Impl
     public class SimpleSubscriber : ISubscriber, IHandlerSource
     {
         private readonly ReaderWriterLockSlim _latch;
-        private readonly Dictionary<Type, ISet<object>> _storeHandlers;
+        private readonly Dictionary<Type, ISet<object>> _handlersStore;
         private readonly HashSet<object> _emptySet;
         private readonly Dictionary<Type, Type[]> _typesCache;
 
         public SimpleSubscriber()
         {
-            _storeHandlers = new Dictionary<Type, ISet<object>>();
+            _handlersStore = new Dictionary<Type, ISet<object>>();
             _emptySet = new HashSet<object>();
             _latch = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
             _typesCache = new Dictionary<Type, Type[]>();
@@ -35,21 +35,23 @@ namespace Codestellation.Emisstar.Impl
 
             if (interfaces.Length == 0) return;
 
-            _latch.EnterReadLock();
+            _latch.EnterWriteLock();
 
             foreach (var @interface in interfaces)
             {
                 ISet<object> handlers;
-                if (_storeHandlers.TryGetValue(@interface, out handlers))
+                if (_handlersStore.TryGetValue(@interface, out handlers))
                 {
-                    handlers.Add(handler);
+                    var newHandlerSet = new HashSet<object>(handlers) {handler};
+                    //Completely replace handler to prevent multithreading issues;
+                    _handlersStore[@interface] = newHandlerSet;
                 }
                 else
                 {
-                    _storeHandlers[@interface] = new HashSet<object> { handler };
+                    _handlersStore[@interface] = new HashSet<object> { handler };
                 }
             }
-            _latch.ExitReadLock();
+            _latch.ExitWriteLock();
         }
 
         /// <summary>
@@ -68,10 +70,13 @@ namespace Codestellation.Emisstar.Impl
             foreach (var @interface in interfaces)
             {
                 ISet<object> handlers;
-                if (_storeHandlers.TryGetValue(@interface, out handlers))
-                {
-                    handlers.Remove(handler);
-                }
+                if (!_handlersStore.TryGetValue(@interface, out handlers)) continue;
+
+                //If it not contains - do nothing
+                if (!handlers.Contains(handler)) continue;
+
+                //Completely replace handlers set to prevent multithreading issues;
+                _handlersStore[@interface] = new HashSet<object>(handlers.Where(x => !x.Equals(handler)));
             }
 
             _latch.ExitWriteLock();
@@ -82,11 +87,13 @@ namespace Codestellation.Emisstar.Impl
             ISet<object> handlers;
 
             _latch.EnterReadLock();
-
-            _storeHandlers.TryGetValue(typeof(IHandler<TMessage>), out handlers);
-            handlers = new HashSet<object>(handlers ?? _emptySet);
-
+            
+            _handlersStore.TryGetValue(typeof(IHandler<TMessage>), out handlers);
+            
             _latch.ExitReadLock();
+
+            //We never change handler set, so it safe to return it without deep copy. 
+            handlers = handlers ?? _emptySet;
 
             return handlers.Cast<IHandler<TMessage>>();
         }
