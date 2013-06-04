@@ -32,7 +32,7 @@ namespace Codestellation.Emisstar.Impl
         }
 
         public SynchronizationContextDispatcher(params IDispatchRule[] rules)
-            : base(new TSynchronizationContext(), new Rule((message, handler) => true))
+            : base(new TSynchronizationContext(), rules)
         {
         }
     }

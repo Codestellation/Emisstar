@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Codestellation.Emisstar.DarkFlowIntegration;
@@ -67,12 +68,13 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             return RegisterRuleBaseDispatcher<SimpleDispatcher>(rules);
         }
 
-        public EmisstarFacility UseSynchronizationContextDispatcher(params IDispatchRule[] rules)
+        public EmisstarFacility UseSynchronizationContextDispatcher<TSynchronizationContext>(params IDispatchRule[] rules)
+            where TSynchronizationContext : SynchronizationContext, new()
         {
-            return RegisterRuleBaseDispatcher<SynchronizationContextDispatcher>(rules);
+            return RegisterRuleBaseDispatcher<SynchronizationContextDispatcher<TSynchronizationContext>>(rules);
         }
-
-        private EmisstarFacility RegisterRuleBaseDispatcher<TDispatcher>(params IDispatchRule[] rules)
+         
+        public EmisstarFacility RegisterRuleBaseDispatcher<TDispatcher>(params IDispatchRule[] rules)
             where TDispatcher : RuleBasedDispatcher
         {
             var componentRegistration =
