@@ -11,5 +11,8 @@
     <description>Simple extensible event publisher.</description>
     <copyright>Copyright (c) 2013 Codestellation</copyright>
     <tags>EventPublisher EventBroker</tags>
+    <dependencies>
+      <dependency id="Nlog" version="2.0.1.2" />
+    </dependencies>
   </metadata>
 </package>

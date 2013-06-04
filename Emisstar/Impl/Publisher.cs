@@ -5,11 +5,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
+using NLog;
 
 namespace Codestellation.Emisstar.Impl
 {
     public class Publisher : IPublisher
     {
+        private static readonly Logger Logger = LogManager.GetLogger(typeof(Publisher).FullName);
         private readonly IHandlerSource _handlerSource;
         private readonly IDispatcher[] _dispatchers;
         private readonly MethodInfo _method;
@@ -45,16 +47,23 @@ namespace Codestellation.Emisstar.Impl
 
         public void Publish(params object[] messages)
         {
-            foreach (var message in messages)
-            {
-                Publish(message);
-            }
+            Publish((IEnumerable) messages);
         }
 
         public void Publish(IEnumerable messages)
         {
+            if (messages == null)
+            {
+                throw new ArgumentException("messages");
+            }
+
             foreach (var message in messages)
             {
+                if (message == null)
+                {
+                    throw new ArgumentException("Every message must be not null object or struct.");
+                }
+
                 Publish(message);
             }
         }
@@ -120,18 +129,32 @@ namespace Codestellation.Emisstar.Impl
         //This method is used by expression calls;
         private void InternalPublish<TMessage>(TMessage message)
         {
-            foreach (var handler in _handlerSource.ResolveHandlersFor<TMessage>())
+            var handlers = _handlerSource.ResolveHandlersFor<TMessage>();
+
+            var invokedHandlers = 0;
+
+            foreach (var handler in handlers)
             {
-                //TODO: Need somekind of caching.
+                //TODO: Need some kind of caching??
                 var dispatcher = _dispatchers.FirstOrDefault(x => x.CanInvoke(message, handler));
 
                 if (dispatcher == null)
                 {
-                    //TODO Log here something meaningful
-                    return;
+                    throw  new InvalidOperationException(string.Format("Dispatcher not found. Message '{0}'", message.GetType()));
                 }
-                
+
+                invokedHandlers++;
                 dispatcher.Invoke(message, handler);
+
+                if (Logger.IsDebugEnabled)
+                {
+                    Logger.Debug("Message {0} dispatched to {1} using {2}", message.GetType(), handler.GetType(), dispatcher.GetType());
+                }
+            }
+
+            if (invokedHandlers == 0 && Logger.IsWarnEnabled)
+            {
+                Logger.Warn("Handler not found. Message '{0}'}'", message.GetType());
             }
         }
     }
