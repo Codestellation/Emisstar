@@ -154,7 +154,7 @@ namespace Codestellation.Emisstar.Impl
 
             if (invokedHandlers == 0 && Logger.IsWarnEnabled)
             {
-                Logger.Warn("Handler not found. Message '{0}'}'", message.GetType());
+                Logger.Warn("Handler not found. Message '{0}'", message.GetType());
             }
         }
     }
