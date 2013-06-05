@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.MicroKernel;
 using Codestellation.Emisstar.Impl;
 
@@ -19,9 +20,11 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             _kernel = kernel;
         }
 
-        public virtual IEnumerable<IHandler<TMessage>> ResolveHandlersFor<TMessage>()
+        public IEnumerable<object> ResolveHandlersFor(Type messageType)
         {
-            return _kernel.ResolveAll<IHandler<TMessage>>();
+            var handlerType = typeof (IHandler<>).MakeGenericType(messageType);
+
+            return _kernel.ResolveAll(handlerType).Cast<object>();
         }
     }
 }

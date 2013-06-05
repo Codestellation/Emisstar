@@ -27,7 +27,7 @@ namespace Codestellation.Emisstar.Tests.Windsor.Facility
 
             var source = new WindsorSource(windsor.Kernel);
 
-            var handlers = source.ResolveHandlersFor<Message>();
+            var handlers = source.ResolveHandlersFor(typeof(Message));
 
             Assert.That(handlers.Count(), Is.EqualTo(2));
         } 

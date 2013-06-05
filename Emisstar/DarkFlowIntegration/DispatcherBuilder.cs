@@ -6,30 +6,29 @@ using Codestellation.Emisstar.Impl;
 namespace Codestellation.Emisstar.DarkFlowIntegration
 {
     //This class builds following code dynamically:
-    //namespace Codestellation.Emisstar.Impl
+
+    //public class ExecutorDispatcher : RuleBasedDispatcher
     //{
-    //    public class ExecutorDispatcher : RuleBasedDispatcher
+    //    private readonly IExecutor _executor;
+
+    //    public ExecutorDispatcher(IExecutor executor)
+    //        : base(new InvokeUsingExecutorRule())
     //    {
-    //        private readonly IExecutor _executor;
-    //
-    //        public ExecutorDispatcher(IExecutor executor): base(new InvokeUsingExecutorRule())
+    //        if (executor == null)
     //        {
-    //            if (executor == null)
-    //            {
-    //                throw new ArgumentNullException("executor");
-    //            }
-    //
-    //            _executor = executor;
+    //            throw new ArgumentNullException("executor");
     //        }
-    //
-    //        protected override void IntervalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
-    //        {
-    //            var task = new InvokeHandlerTask<TMessage>(message, handler);
-    //
-    //            _executor.Execute(task);
-    //        }
+
+    //        _executor = executor;
+    //    }
+
+    //    public override void Invoke(ref MessageHandlerTuple tuple)
+    //    {
+    //        var task = new InvokeHandlerTaskTemplate(tuple);
+    //        _executor.Execute(task);
     //    }
     //}
+
 
     internal class DispatcherBuilder
     {
@@ -62,47 +61,12 @@ namespace Codestellation.Emisstar.DarkFlowIntegration
             return _dispatcherBuilder.CreateType();
         }
 
-        private void DefineInvokeMethod()
+        private void DefineType()
         {
-            var methodName = "InternalInvoke";
-            var builder = _dispatcherBuilder.DefineMethod(
-                methodName,
-                MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.ReuseSlot);
+            const string dispatcherName = IntegrationAssemblyBuilder.IntegrationAssemblyName + ".ExecutorDispatcher";
 
-            var messageTypeParameter = builder.DefineGenericParameters("TMessage1")[0];
-
-            var handlerType = typeof(IHandler<>).MakeGenericType(new Type[] { messageTypeParameter });
-
-            builder.SetParameters(messageTypeParameter, handlerType);
-
-            builder.DefineParameter(1, ParameterAttributes.None, "message");
-            builder.DefineParameter(2, ParameterAttributes.None, "handler");
-
-            builder.SetReturnType(typeof(void));
-
-            var taskType = _generatedTaskType.MakeGenericType(messageTypeParameter);
-
-            var ilgen = builder.GetILGenerator();
-
-            ilgen.DeclareLocal(taskType);
-
-            ilgen.Emit(OpCodes.Ldarg_1); //IL_0000:  ldarg.1
-            ilgen.Emit(OpCodes.Ldarg_2); //IL_0001:  ldarg.2
-
-
-            var openCtor = _generatedTaskType.GetConstructors()[0];
-            var taskCtor = TypeBuilder.GetConstructor(taskType, openCtor);
-
-
-            ilgen.Emit(OpCodes.Newobj, taskCtor); //IL_0002:  newobj     instance void class Codestellation.Emisstar.Impl.InvokeHandlerTask`1<!!TMessage>::.ctor(!0, class Codestellation.Emisstar.IHandler`1<!0>)
-            ilgen.Emit(OpCodes.Stloc_0); //IL_0007:  stloc.0
-            ilgen.Emit(OpCodes.Ldarg_0); //IL_0008:  ldarg.0
-            ilgen.Emit(OpCodes.Ldfld, _executorField); //IL_0009:  ldfld      class [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor Codestellation.Emisstar.Impl.ExecutorDispatcher::_executor
-            ilgen.Emit(OpCodes.Ldloc_0); //IL_000e:  ldloc.0
-
-            var executeMethod = _executorType.GetMethods()[0];
-            ilgen.Emit(OpCodes.Callvirt, executeMethod); //IL_000f:  callvirt   instance void [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor::Execute(class [Codestellation.DarkFlow]Codestellation.DarkFlow.ITask)
-            ilgen.Emit(OpCodes.Ret); //IL_0014:  ret
+            _dispatcherBuilder = _modBuilder.DefineType(dispatcherName, TypeAttributes.Class | TypeAttributes.Public);
+            _dispatcherBuilder.SetParent(typeof(RuleBasedDispatcher));
         }
 
         private void DefineFields()
@@ -113,7 +77,6 @@ namespace Codestellation.Emisstar.DarkFlowIntegration
         private void DefineConstrunctor()
         {
             //Implements this:
-
 
             const MethodAttributes construnctorAttributes = MethodAttributes.Public | MethodAttributes.HideBySig;
             var ctorBuilder = _dispatcherBuilder.DefineConstructor(construnctorAttributes, CallingConventions.Standard, new[] { _executorType });
@@ -153,12 +116,50 @@ namespace Codestellation.Emisstar.DarkFlowIntegration
             ilgen.Emit(OpCodes.Ret); //IL_002b:  ret
         }
 
-        private void DefineType()
+        private void DefineInvokeMethod()
         {
-            const string dispatcherName = IntegrationAssemblyBuilder.IntegrationAssemblyName + ".ExecutorDispatcher";
+            var methodName = "Invoke";
+            var builder = _dispatcherBuilder.DefineMethod(
+                methodName,
+                MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.ReuseSlot);
 
-            _dispatcherBuilder = _modBuilder.DefineType(dispatcherName, TypeAttributes.Class | TypeAttributes.Public);
-            _dispatcherBuilder.SetParent(typeof(RuleBasedDispatcher));
+            var type = typeof (MessageHandlerTuple);
+
+            builder.SetParameters(type.MakeByRefType());
+
+            builder.DefineParameter(1, ParameterAttributes.None, "tuple");
+
+            builder.SetReturnType(typeof(void));
+
+            var ilgen = builder.GetILGenerator();
+
+            ilgen.DeclareLocal(_generatedTaskType);
+
+            //IL_0000:  ldarg.1
+            //IL_0001:  ldobj      [Codestellation.Emisstar]Codestellation.Emisstar.Impl.MessageHandlerTuple
+
+            ilgen.Emit(OpCodes.Ldarg_1);
+            ilgen.Emit(OpCodes.Ldobj, typeof(MessageHandlerTuple));
+
+            //IL_0006:  newobj     instance void Codestellation.Emisstar.Tests.InvokeHandlerTaskTemplate::.ctor(valuetype [Codestellation.Emisstar]Codestellation.Emisstar.Impl.MessageHandlerTuple)
+            //IL_000b:  stloc.0
+            //IL_000c:  ldarg.0
+            //IL_000d:  ldfld      class [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor Codestellation.Emisstar.Tests.ExecutorDispatcher::_executor
+            //IL_0012:  ldloc.0
+
+            var taskCtor = _generatedTaskType.GetConstructors()[0];
+
+            ilgen.Emit(OpCodes.Newobj, taskCtor); //IL_0002:  newobj     instance void class Codestellation.Emisstar.Impl.InvokeHandlerTask`1<!!TMessage>::.ctor(!0, class Codestellation.Emisstar.IHandler`1<!0>)
+            ilgen.Emit(OpCodes.Stloc_0); //IL_0007:  stloc.0
+            ilgen.Emit(OpCodes.Ldarg_0); //IL_0008:  ldarg.0
+            ilgen.Emit(OpCodes.Ldfld, _executorField); //IL_0009:  ldfld      class [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor Codestellation.Emisstar.Impl.ExecutorDispatcher::_executor
+            ilgen.Emit(OpCodes.Ldloc_0); //IL_000e:  ldloc.0
+
+            //IL_0013:  callvirt   instance void [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor::Execute(class [Codestellation.DarkFlow]Codestellation.DarkFlow.ITask)
+            //IL_0018:  ret
+            var executeMethod = _executorType.GetMethods()[0];
+            ilgen.Emit(OpCodes.Callvirt, executeMethod); //IL_000f:  callvirt   instance void [Codestellation.DarkFlow]Codestellation.DarkFlow.IExecutor::Execute(class [Codestellation.DarkFlow]Codestellation.DarkFlow.ITask)
+            ilgen.Emit(OpCodes.Ret); //IL_0014:  ret
         }
     }
 }

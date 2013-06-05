@@ -17,7 +17,7 @@ namespace Codestellation.Emisstar.Tests.Testing
             var handler = publisher.RegisterTestHandler<TestMessage>();
 
             Assert.That(handler, Is.InstanceOf<TestHandler<TestMessage>>());
-            Assert.That(((IHandlerSource)publisher.GetAssignee()).ResolveHandlersFor<TestMessage>().First(), Is.SameAs(handler));
+            Assert.That(((IHandlerSource)publisher.GetAssignee()).ResolveHandlersFor(typeof(TestMessage)).First(), Is.SameAs(handler));
         }
     }
 }

@@ -40,9 +40,9 @@ namespace Codestellation.Emisstar.Tests.Impl
                               list.Contains(secondHandler));
         }
 
-        private IList<IHandler<TestMessage>> GetListenersFromCompositeSource()
+        private IList<object> GetListenersFromCompositeSource()
         {
-            return new List<IHandler<TestMessage>>(_compositeSource.ResolveHandlersFor<TestMessage>());
+            return new List<object>(_compositeSource.ResolveHandlersFor(typeof(TestMessage)));
         }
 
         [Test]

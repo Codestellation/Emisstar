@@ -7,7 +7,7 @@ namespace Codestellation.Emisstar.Impl
         private readonly SynchronizationContext _synchronizationContext;
 
         public SynchronizationContextDispatcher(SynchronizationContext synchronizationContext)
-            : this(synchronizationContext, new Rule((message, handler) => true))
+            : this(synchronizationContext, new Rule(tuple => true))
         {
         }
 
@@ -17,9 +17,15 @@ namespace Codestellation.Emisstar.Impl
             _synchronizationContext = synchronizationContext;
         }
 
-        protected override void InternalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
+        public override void Invoke(ref MessageHandlerTuple tuple)
         {
-            _synchronizationContext.Post(x => handler.Handle(message), null);
+            _synchronizationContext.Post(PostMessage, tuple);
+        }
+
+        private void PostMessage(object state)
+        {
+            var tuple = (MessageHandlerTuple) state;
+            base.Invoke(ref tuple);
         }
     }
 
@@ -27,7 +33,7 @@ namespace Codestellation.Emisstar.Impl
         where TSynchronizationContext : SynchronizationContext, new()
     {
         public SynchronizationContextDispatcher()
-            : base(new TSynchronizationContext(), new Rule((message, handler) => true))
+            : base(new TSynchronizationContext(), new Rule(tuple => true))
         {
         }
 

@@ -24,17 +24,12 @@ namespace Codestellation.Emisstar.Impl
             _latch = new object();
         }
 
-        public virtual IEnumerable<IHandler<TMessage>> ResolveHandlersFor<TMessage>()
+        public virtual IEnumerable<object> ResolveHandlersFor(Type messageType)
         {
-            return ResolveHandlersFromSources<TMessage>(_sources);
-        }
-
-        private static IEnumerable<IHandler<TMessage>> ResolveHandlersFromSources<TMessage>(IEnumerable<IHandlerSource> sources)
-        {
-            var result = new HashSet<IHandler<TMessage>>();
-            foreach (var handlerSource in sources)
+            var result = new HashSet<object>();
+            foreach (var handlerSource in _sources)
             {
-                result.UnionWith(handlerSource.ResolveHandlersFor<TMessage>());
+                result.UnionWith(handlerSource.ResolveHandlersFor(messageType));
             }
             return result;
         }

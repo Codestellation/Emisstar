@@ -24,7 +24,9 @@ namespace Codestellation.Emisstar.Tests.Impl
             var handler = new TestHandler();
             var message = new TestMessage();
 
-            dispatcher.Invoke(message, handler);
+            var tuple = new MessageHandlerTuple(message, handler);
+
+            dispatcher.Invoke(ref tuple);
 
             handler.Called.WaitOne(1000);
 

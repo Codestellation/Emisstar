@@ -50,6 +50,8 @@
     <Compile Include="DarkFlowIntegration\DispatcherBuilder.cs" />
     <Compile Include="DarkFlowIntegration\IntergrationAssemblyBuilder.cs" />
     <Compile Include="DarkFlowIntegration\TaskBuilder.cs" />
+    <Compile Include="Impl\HandlerInvoker.cs" />
+    <Compile Include="Impl\MessageHandlerTuple.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="Impl\CompositeHandlerSource.cs" />
     <Compile Include="Impl\IDispatchRule.cs" />

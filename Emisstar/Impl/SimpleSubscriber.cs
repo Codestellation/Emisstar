@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,13 +13,13 @@ namespace Codestellation.Emisstar.Impl
     {
         private readonly ReaderWriterLockSlim _latch;
         private readonly Dictionary<Type, ISet<object>> _handlersStore;
-        private readonly HashSet<object> _emptySet;
+        private readonly object[] _emptySet;
         private readonly Dictionary<Type, Type[]> _typesCache;
 
         public SimpleSubscriber()
         {
             _handlersStore = new Dictionary<Type, ISet<object>>();
-            _emptySet = new HashSet<object>();
+            _emptySet = new object[0];
             _latch = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
             _typesCache = new Dictionary<Type, Type[]>();
         }
@@ -82,20 +83,25 @@ namespace Codestellation.Emisstar.Impl
             _latch.ExitWriteLock();
         }
 
-        public virtual IEnumerable<IHandler<TMessage>> ResolveHandlersFor<TMessage>()
+        public virtual IEnumerable<object> ResolveHandlersFor(Type messageType)
         {
             ISet<object> handlers;
 
+            var handlerType = typeof (IHandler<>).MakeGenericType(messageType);
+
             _latch.EnterReadLock();
             
-            _handlersStore.TryGetValue(typeof(IHandler<TMessage>), out handlers);
+            _handlersStore.TryGetValue(handlerType, out handlers);
             
             _latch.ExitReadLock();
 
-            //We never change handler set, so it safe to return it without deep copy. 
-            handlers = handlers ?? _emptySet;
+            if (handlers == null)
+            {
+                return _emptySet;
+            }
 
-            return handlers.Cast<IHandler<TMessage>>();
+            //We never change handler set, so it safe to return it without deep copy. 
+            return handlers;
         }
 
         private Type[] GetImplementedHandlers(object handler)
@@ -112,4 +118,6 @@ namespace Codestellation.Emisstar.Impl
             return implementedHandlers;
         }
     }
+
+
 }

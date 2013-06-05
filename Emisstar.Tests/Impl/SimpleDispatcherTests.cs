@@ -12,8 +12,9 @@ namespace Codestellation.Emisstar.Tests.Impl
             var simplePublishWay = new SimpleDispatcher();
             var message = new TestMessage();
             var handler = new TestHandler();
+            var tuple = new MessageHandlerTuple(message, handler);
 
-            simplePublishWay.Invoke(message, handler);
+            simplePublishWay.Invoke(ref tuple);
 
             Assert.That(handler.TestMessage, Is.SameAs(message));
         }

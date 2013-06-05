@@ -14,9 +14,9 @@ namespace Codestellation.Emisstar.DarkFlowIntegration
             _messageTypes = new ConcurrentDictionary<Type, bool>();
         }
 
-        public bool CanDispatch(object message, object handler)
+        public bool CanDispatch(ref MessageHandlerTuple tuple)
         {
-            return _messageTypes.GetOrAdd(message.GetType(), CheckAttributes);
+            return _messageTypes.GetOrAdd(tuple.Message.GetType(), CheckAttributes);
         }
 
         private static bool CheckAttributes(Type messageType)

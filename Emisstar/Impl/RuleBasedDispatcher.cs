@@ -2,25 +2,27 @@
 
 namespace Codestellation.Emisstar.Impl
 {
-    public abstract class RuleBasedDispatcher : IDispatcher
+    public class RuleBasedDispatcher : IDispatcher
     {
         private readonly IDispatchRule[] _rules;
-
         protected RuleBasedDispatcher(params IDispatchRule[] rules)
         {
             _rules = rules;
         }
 
-        public bool CanInvoke<TMessage>(TMessage message, IHandler<TMessage> handler)
+        public bool CanInvoke(ref MessageHandlerTuple tuple)
         {
-            return _rules.Any(x => x.CanDispatch(message, handler));
+            for (int i = 0; i < _rules.Length; i++)
+            {
+                var result = _rules[i].CanDispatch(ref tuple);
+                if (result) return true;
+            }
+            return false;
         }
 
-        public virtual void Invoke<TMessage>(TMessage message, IHandler<TMessage> handler)
+        public virtual void Invoke(ref MessageHandlerTuple tuple)
         {
-            InternalInvoke(message, handler);
+            HandlerInvoker.Invoke(ref tuple);
         }
-
-        protected abstract void InternalInvoke<TMessage>(TMessage message, IHandler<TMessage> handler);
     }
 }

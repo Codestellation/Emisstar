@@ -2,6 +2,6 @@
 {
     public interface IDispatchRule
     {
-        bool CanDispatch(object message, object handler);
+        bool CanDispatch(ref MessageHandlerTuple tuple);
     }
 }
