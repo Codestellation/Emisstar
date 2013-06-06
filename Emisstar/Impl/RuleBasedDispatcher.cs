@@ -3,6 +3,7 @@
     public class RuleBasedDispatcher : IDispatcher
     {
         private readonly IDispatchRule[] _rules;
+
         protected RuleBasedDispatcher(params IDispatchRule[] rules)
         {
             _rules = rules;
@@ -10,15 +11,14 @@
 
         public virtual bool CanInvoke(ref MessageHandlerTuple tuple)
         {
-            if (!typeof (IHandler<>).MakeGenericType(tuple.Message.GetType()).IsInstanceOfType(tuple.Handler))
+            if (HandlerInvoker.IsHandler(ref tuple))
             {
-                return false;
-            }
+                for (int i = 0; i < _rules.Length; i++)
+                {
+                    var result = _rules[i].CanDispatch(ref tuple);
 
-            for (int i = 0; i < _rules.Length; i++)
-            {
-                var result = _rules[i].CanDispatch(ref tuple);
-                if (result) return true;
+                    if (result) return true;
+                }
             }
             return false;
         }
