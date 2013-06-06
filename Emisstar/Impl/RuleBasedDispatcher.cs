@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Codestellation.Emisstar.Impl
+﻿namespace Codestellation.Emisstar.Impl
 {
     public class RuleBasedDispatcher : IDispatcher
     {
@@ -10,8 +8,13 @@ namespace Codestellation.Emisstar.Impl
             _rules = rules;
         }
 
-        public bool CanInvoke(ref MessageHandlerTuple tuple)
+        public virtual bool CanInvoke(ref MessageHandlerTuple tuple)
         {
+            if (!typeof (IHandler<>).MakeGenericType(tuple.Message.GetType()).IsInstanceOfType(tuple.Handler))
+            {
+                return false;
+            }
+
             for (int i = 0; i < _rules.Length; i++)
             {
                 var result = _rules[i].CanDispatch(ref tuple);
