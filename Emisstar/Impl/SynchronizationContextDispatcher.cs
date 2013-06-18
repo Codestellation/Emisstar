@@ -1,9 +1,12 @@
 using System.Threading;
+using NLog;
 
 namespace Codestellation.Emisstar.Impl
 {
     public class SynchronizationContextDispatcher : RuleBasedDispatcher
     {
+        private static readonly Logger Logger = LogManager.GetLogger(typeof (SynchronizationContextDispatcher).FullName);
+
         private readonly SynchronizationContext _synchronizationContext;
 
         public SynchronizationContextDispatcher(SynchronizationContext synchronizationContext)
@@ -19,7 +22,23 @@ namespace Codestellation.Emisstar.Impl
 
         public override void Invoke(ref MessageHandlerTuple tuple)
         {
-            _synchronizationContext.Post(PostMessage, tuple);
+            if (SynchronizationContext.Current == _synchronizationContext)
+            {
+                if (Logger.IsDebugEnabled)
+                {
+                    Logger.Debug("Direct invoke '{0}' to '{1}'", tuple.Message, tuple.Handler);
+                }
+
+                base.Invoke(ref tuple);
+            }
+            else
+            {
+                if (Logger.IsDebugEnabled)
+                {
+                    Logger.Debug("SyncContext post '{0}' to '{1}'", tuple.Message, tuple.Handler);
+                }
+                _synchronizationContext.Post(PostMessage, tuple);
+            }
         }
 
         private void PostMessage(object state)
