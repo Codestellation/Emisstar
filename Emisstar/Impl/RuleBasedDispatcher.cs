@@ -9,21 +9,23 @@
             _rules = rules;
         }
 
-        public virtual bool CanInvoke(ref MessageHandlerTuple tuple)
+        public virtual bool TryInvoke(ref MessageHandlerTuple tuple)
         {
             if (HandlerInvoker.IsHandler(ref tuple))
             {
                 for (int i = 0; i < _rules.Length; i++)
                 {
-                    var result = _rules[i].CanDispatch(ref tuple);
-
-                    if (result) return true;
+                    if (_rules[i].CanDispatch(ref tuple))
+                    {
+                        Invoke(ref tuple);
+                        return true;
+                    }
                 }
             }
             return false;
         }
 
-        public virtual void Invoke(ref MessageHandlerTuple tuple)
+        protected virtual void Invoke(ref MessageHandlerTuple tuple)
         {
             HandlerInvoker.Invoke(ref tuple);
         }

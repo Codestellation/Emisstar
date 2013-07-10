@@ -17,7 +17,7 @@ namespace Codestellation.Emisstar.Impl
             {
                 throw new ArgumentNullException("handlerSource");
             }
-            
+
             if (dispatchers == null)
             {
                 throw new ArgumentNullException("dispatchers");
@@ -35,7 +35,7 @@ namespace Codestellation.Emisstar.Impl
 
         public void Publish(params object[] messages)
         {
-            Publish((IEnumerable) messages);
+            Publish((IEnumerable)messages);
         }
 
         public void Publish(IEnumerable messages)
@@ -55,7 +55,7 @@ namespace Codestellation.Emisstar.Impl
                 Publish(message);
             }
         }
-       
+
         private void Publish(object message)
         {
             var handlers = _handlerSource.ResolveHandlersFor(message.GetType());
@@ -67,20 +67,23 @@ namespace Codestellation.Emisstar.Impl
                 //TODO: Need some kind of caching??
                 var tuple = new MessageHandlerTuple(message, handler);
 
-                var dispatcher = _dispatchers.FirstOrDefault(x => x.CanInvoke(ref tuple));
-
-                if (dispatcher == null)
+                bool invoked = false;
+                for (int i = 0; i < _dispatchers.Length; i++)
                 {
-                    throw  new InvalidOperationException(string.Format("Dispatcher not found. Message '{0}'", message.GetType()));
+                    var dispatcher = _dispatchers[i];
+                    invoked = dispatcher.TryInvoke(ref tuple);
+                    if (invoked && Logger.IsDebugEnabled)
+                    {
+                        Logger.Debug("Message {0} dispatched to {1} using {2}", message.GetType(), handler.GetType(), dispatcher.GetType());
+                        break;
+                    }
                 }
 
+                if (!invoked)
+                {
+                    throw new InvalidOperationException(string.Format("Dispatcher not found. Message '{0}'", message.GetType()));
+                }
                 invokedHandlers++;
-                dispatcher.Invoke(ref tuple);
-
-                if (Logger.IsDebugEnabled)
-                {
-                    Logger.Debug("Message {0} dispatched to {1} using {2}", message.GetType(), handler.GetType(), dispatcher.GetType());
-                }
             }
 
             if (invokedHandlers == 0 && Logger.IsWarnEnabled)

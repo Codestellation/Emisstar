@@ -20,7 +20,7 @@ namespace Codestellation.Emisstar.Impl
             _synchronizationContext = synchronizationContext;
         }
 
-        public override void Invoke(ref MessageHandlerTuple tuple)
+        protected override void Invoke(ref MessageHandlerTuple tuple)
         {
             if (SynchronizationContext.Current == _synchronizationContext)
             {

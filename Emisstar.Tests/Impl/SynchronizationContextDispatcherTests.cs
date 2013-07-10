@@ -26,10 +26,11 @@ namespace Codestellation.Emisstar.Tests.Impl
 
             var tuple = new MessageHandlerTuple(message, handler);
 
-            dispatcher.Invoke(ref tuple);
+            var invoked = dispatcher.TryInvoke(ref tuple);
 
             handler.Called.WaitOne(1000);
 
+            Assert.That(invoked, Is.True);
             Assert.That(handler.TestMessage, Is.SameAs(message));
         }
     }
