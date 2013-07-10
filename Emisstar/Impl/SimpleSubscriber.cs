@@ -87,7 +87,7 @@ namespace Codestellation.Emisstar.Impl
         {
             ISet<object> handlers;
 
-            var handlerType = typeof (IHandler<>).MakeGenericType(messageType);
+            var handlerType = messageType.GetHandlerType();
 
             _latch.EnterReadLock();
             

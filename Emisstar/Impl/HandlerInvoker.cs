@@ -63,7 +63,7 @@ namespace Codestellation.Emisstar.Impl
 
         private static Invoker BuildExpression(Type messageType)
         {
-            var closedHandlerType = typeof(IHandler<>).MakeGenericType(messageType);
+            var closedHandlerType = messageType.GetHandlerType();
 
             var tupleParameter = Expression.Parameter(typeof(MessageHandlerTuple), "tuple");
 
@@ -71,7 +71,7 @@ namespace Codestellation.Emisstar.Impl
 
             var handler = Expression.PropertyOrField(tupleParameter, "Handler");
 
-            var castedHandler = Expression.Convert(handler, typeof (IHandler<>).MakeGenericType(messageType));
+            var castedHandler = Expression.Convert(handler, closedHandlerType);
 
             var message = Expression.PropertyOrField(tupleParameter, "Message");
 
