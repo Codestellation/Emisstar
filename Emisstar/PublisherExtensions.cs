@@ -13,6 +13,11 @@ namespace Codestellation.Emisstar
         /// <param name="message2">A message to deliver</param>
         public static void Publish(this IPublisher self, object message1, object message2)
         {
+            if (self == null)
+            {
+                throw new ArgumentNullException("self");
+            }
+
             self.Publish(message1);
             self.Publish(message2);
         }
@@ -26,6 +31,11 @@ namespace Codestellation.Emisstar
         /// <param name="message3">A message to deliver</param>
         public static void Publish(this IPublisher self, object message1, object message2, object message3)
         {
+            if (self == null)
+            {
+                throw new ArgumentNullException("self");
+            }
+
             self.Publish(message1);
             self.Publish(message2);
             self.Publish(message3);
@@ -41,6 +51,11 @@ namespace Codestellation.Emisstar
         /// <param name="message4">A message to deliver</param>
         public static void Publish(this IPublisher self, object message1, object message2, object message3, object message4)
         {
+            if (self == null)
+            {
+                throw new ArgumentNullException("self");
+            }
+
             self.Publish(message1);
             self.Publish(message2);
             self.Publish(message3);
@@ -58,6 +73,11 @@ namespace Codestellation.Emisstar
         /// <param name="message5">A message to deliver</param>
         public static void Publish(this IPublisher self, object message1, object message2, object message3, object message4, object message5)
         {
+            if (self == null)
+            {
+                throw new ArgumentNullException("self");
+            }
+
             self.Publish(message1);
             self.Publish(message2);
             self.Publish(message3);
@@ -82,6 +102,11 @@ namespace Codestellation.Emisstar
         /// <param name="messages">Messages to deliver.</param>
         public static void Publish(this IPublisher self, IEnumerable messages)
         {
+            if (self == null)
+            {
+                throw new ArgumentNullException("self");
+            }
+
             if (messages == null)
             {
                 throw new ArgumentNullException("messages", "Messages should not be null");
