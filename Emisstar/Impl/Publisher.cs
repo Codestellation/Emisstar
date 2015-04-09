@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using NLog;
 
@@ -32,39 +31,19 @@ namespace Codestellation.Emisstar.Impl
             _dispatchers = dispatchers;
         }
 
-
-        public void Publish(params object[] messages)
+        public void Publish(object message)
         {
-            Publish((IEnumerable)messages);
-        }
-
-        public void Publish(IEnumerable messages)
-        {
-            if (messages == null)
+            if (message == null)
             {
-                throw new ArgumentException("messages");
+                throw new ArgumentNullException("message", "Message should not be null");
             }
 
-            foreach (var message in messages)
-            {
-                if (message == null)
-                {
-                    throw new ArgumentException("Every message must be not null object or struct.");
-                }
-
-                Publish(message);
-            }
-        }
-
-        private void Publish(object message)
-        {
             var handlers = _handlerSource.ResolveHandlersFor(message.GetType());
 
             var invokedHandlers = 0;
 
             foreach (var handler in handlers)
             {
-                //TODO: Need some kind of caching??
                 var tuple = new MessageHandlerTuple(message, handler);
 
                 bool invoked = false;

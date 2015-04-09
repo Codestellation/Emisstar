@@ -69,6 +69,7 @@
     <Compile Include="IHandler.cs" />
     <Compile Include="InvokeViaExecutorAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublisherExtensions.cs" />
     <Compile Include="Testing\TestHandler.cs" />
     <Compile Include="Testing\TestPublisher.cs" />
   </ItemGroup>
