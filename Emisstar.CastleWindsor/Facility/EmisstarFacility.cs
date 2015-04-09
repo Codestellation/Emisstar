@@ -9,11 +9,11 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
 {
     public class EmisstarFacility : AbstractFacility
     {
-        private List<ComponentRegistration<IDispatcher>> _dispatcherRegistrations;
+        private List<IRegistration> _dispatcherRegistrations;
 
         public EmisstarFacility()
         {
-            _dispatcherRegistrations = new List<ComponentRegistration<IDispatcher>>();
+            _dispatcherRegistrations = new List<IRegistration>();
         }
         protected override void Init()
         {
@@ -72,6 +72,17 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             where TSynchronizationContext : SynchronizationContext, new()
         {
             return RegisterRuleBaseDispatcher<SynchronizationContextDispatcher<TSynchronizationContext>>(rules);
+        }
+        
+        public EmisstarFacility UseSynchronizationContextDispatcher(SynchronizationContext context, params IDispatchRule[] rules)
+        {
+            var contextRegistration = Component
+                .For<SynchronizationContext>()
+                .Instance(context);
+
+            _dispatcherRegistrations.Add(contextRegistration);
+
+            return RegisterRuleBaseDispatcher<SynchronizationContextDispatcher>(rules);
         }
          
         public EmisstarFacility RegisterRuleBaseDispatcher<TDispatcher>(params IDispatchRule[] rules)
