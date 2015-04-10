@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
@@ -74,11 +75,11 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
             return RegisterRuleBaseDispatcher<SynchronizationContextDispatcher<TSynchronizationContext>>(rules);
         }
         
-        public EmisstarFacility UseSynchronizationContextDispatcher(SynchronizationContext context, params IDispatchRule[] rules)
+        public EmisstarFacility UseSynchronizationContextDispatcher(Func<SynchronizationContext> contextFactory, params IDispatchRule[] rules)
         {
             var contextRegistration = Component
                 .For<SynchronizationContext>()
-                .Instance(context);
+                .UsingFactoryMethod(contextFactory);
 
             _dispatcherRegistrations.Add(contextRegistration);
 
@@ -115,7 +116,7 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
 
         private void RegisterDispatchers()
         {
-            if (_dispatcherRegistrations.Count == 0)
+            if (_dispatcherRegistrations.Count == 0 && !Kernel.HasComponent(typeof(IDispatcher)))
             {
                 UseSimpleDispatcher();
             }
