@@ -7,11 +7,21 @@ namespace Codestellation.Emisstar.Impl
     public class Publisher : IPublisher
     {
         private static readonly Logger Logger = LogManager.GetLogger(typeof(Publisher).FullName);
+        private readonly PublisherSettings _settings;
         private readonly IHandlerSource _handlerSource;
         private readonly IDispatcher[] _dispatchers;
 
         public Publisher(IHandlerSource handlerSource, IDispatcher[] dispatchers)
+            : this(PublisherSettings.Default, handlerSource, dispatchers)
         {
+
+        }
+        public Publisher(PublisherSettings settings, IHandlerSource handlerSource, IDispatcher[] dispatchers)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
             if (handlerSource == null)
             {
                 throw new ArgumentNullException("handlerSource");
@@ -27,6 +37,7 @@ namespace Codestellation.Emisstar.Impl
                 throw new ArgumentException("At least one of dispatches is null.", "dispatchers");
             }
 
+            _settings = settings;
             _handlerSource = handlerSource;
             _dispatchers = dispatchers;
         }
@@ -46,28 +57,45 @@ namespace Codestellation.Emisstar.Impl
             {
                 var tuple = new MessageHandlerTuple(message, handler);
 
-                bool invoked = false;
+                var dispatchedTimes = 0;
                 for (int i = 0; i < _dispatchers.Length; i++)
                 {
                     var dispatcher = _dispatchers[i];
-                    invoked |= dispatcher.TryInvoke(ref tuple);
-                    if (invoked && Logger.IsDebugEnabled)
+                    if (dispatcher.TryInvoke(ref tuple))
+                    {
+                        dispatchedTimes++;
+                    }
+
+                    if (dispatchedTimes > 0 && Logger.IsDebugEnabled)
                     {
                         Logger.Debug("Message {0} dispatched to {1} using {2}", message.GetType(), handler.GetType(), dispatcher.GetType());
                         break;
                     }
                 }
 
-                if (!invoked)
+                if (dispatchedTimes == 0 && !_settings.IgnoreNoDispatcher)
                 {
-                    throw new InvalidOperationException(string.Format("Dispatcher not found. Message '{0}'", message.GetType()));
+                    var exceptionMessage = string.Format("Dispatcher not found. Message '{0}'", message);
+                    throw new InvalidOperationException(exceptionMessage);
                 }
+                if (dispatchedTimes > 1 && !_settings.IgnoreMultipleDispatcher)
+                {
+                    var exceptionMessage = string.Format("Message {0} delivered to multiple dispatchers", message);
+                    throw new InvalidOperationException(exceptionMessage);
+                }
+
                 invokedHandlers++;
             }
 
             if (invokedHandlers == 0 && Logger.IsWarnEnabled)
             {
                 Logger.Warn("Handler not found. Message '{0}'", message.GetType());
+            }
+
+            if (invokedHandlers == 0 && !_settings.IgnoreNoHandlers)
+            {
+                var exceptionMessage = string.Format("Could not find handler for message {0}", message);
+                throw new InvalidOperationException(exceptionMessage);
             }
         }
     }
