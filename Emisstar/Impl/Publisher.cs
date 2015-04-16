@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using NLog;
 
@@ -96,6 +97,19 @@ namespace Codestellation.Emisstar.Impl
             {
                 var exceptionMessage = string.Format("Could not find handler for message {0}", message);
                 throw new InvalidOperationException(exceptionMessage);
+            }
+        }
+
+        public void Publish(IEnumerable messages)
+        {
+            if (messages == null)
+            {
+                throw new ArgumentNullException("messages", "Messages should not be null");
+            }
+
+            foreach (var message in messages)
+            {
+                Publish(message);
             }
         }
     }

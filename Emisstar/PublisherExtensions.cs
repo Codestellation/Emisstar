@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Codestellation.Emisstar
 {
@@ -93,40 +91,7 @@ namespace Codestellation.Emisstar
         /// <param name="messages">Messages to deliver.</param>
         public static void Publish(this IPublisher self, params object[] messages)
         {
-            Publish(self, (IEnumerable)messages);
-        }
-
-        /// <summary>
-        /// Publish messages to subscribed handlers.
-        /// </summary>
-        /// <param name="self">An intance of <see cref="IPublisher"/></param>
-        /// <param name="messages">Messages to deliver.</param>
-        public static void Publish<T>(this IPublisher self, IEnumerable<T> messages)
-        {
-            Publish(self, (IEnumerable)messages);
-        }
-
-        /// <summary>
-        /// Publish messages to subscribed handlers.
-        /// </summary>
-        /// <param name="self">An intance of <see cref="IPublisher"/></param>
-        /// <param name="messages">Messages to deliver.</param>
-        public static void Publish(this IPublisher self, IEnumerable messages)
-        {
-            if (self == null)
-            {
-                throw new ArgumentNullException("self");
-            }
-
-            if (messages == null)
-            {
-                throw new ArgumentNullException("messages", "Messages should not be null");
-            }
-
-            foreach (var message in messages)
-            {
-                self.Publish(message);
-            }
+            self.Publish(messages);
         }
     }
 }
