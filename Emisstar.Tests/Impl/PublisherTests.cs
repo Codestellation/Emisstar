@@ -1,6 +1,7 @@
 ﻿using System;
 using Codestellation.Emisstar.Impl;
 using NUnit.Framework;
+using Shouldly;
 
 namespace Codestellation.Emisstar.Tests.Impl
 {
@@ -35,6 +36,20 @@ namespace Codestellation.Emisstar.Tests.Impl
         public void Constructor_will_throw_if_handler_source_is_null()
         {
             new Publisher(null, new IDispatcher[] {new SimpleDispatcher()});
+        }
+
+        [Test]
+        public void Should_not_fail_if_onle_one_dispatcher_can_dispath_message()
+        {
+            var assignee = new SimpleSubscriber();
+            var dispatcher = new SimpleDispatcher();
+            var handler = new TestHandler();
+            var message = new TestMessage();
+            var publisher = new Publisher(assignee, new[] { dispatcher, new SimpleDispatcher(new Rule(x => false)) });
+
+            assignee.Subscribe(handler);
+
+            Should.NotThrow(() => publisher.Publish(message));
         }
     }
 }

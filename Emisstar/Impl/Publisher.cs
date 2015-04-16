@@ -50,7 +50,7 @@ namespace Codestellation.Emisstar.Impl
                 for (int i = 0; i < _dispatchers.Length; i++)
                 {
                     var dispatcher = _dispatchers[i];
-                    invoked = dispatcher.TryInvoke(ref tuple);
+                    invoked |= dispatcher.TryInvoke(ref tuple);
                     if (invoked && Logger.IsDebugEnabled)
                     {
                         Logger.Debug("Message {0} dispatched to {1} using {2}", message.GetType(), handler.GetType(), dispatcher.GetType());
