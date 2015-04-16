@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Codestellation.Emisstar.Impl;
 using LightInject;
 
-namespace Emisstar.LightInject
+namespace Codestellation.Emisstar.LightInject
 {
     public class LightInjectSource : IHandlerSource
     {

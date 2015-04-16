@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using Codestellation.Emisstar.LightInject;
 using Codestellation.Emisstar.Testing;
 using Codestellation.Emisstar.Tests.Windsor;
-using Emisstar.LightInject;
 using LightInject;
 using NUnit.Framework;
 
