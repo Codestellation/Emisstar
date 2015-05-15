@@ -14,6 +14,9 @@ namespace Codestellation.Emisstar.Tests.LightInject
         public void Resolve_returns_instances_from_kernel()
         {
             var container = new ServiceContainer();
+            
+            
+            
             container.Register<IHandler<Message>, TestHandler<Message>>(new PerContainerLifetime());
             container.Register<IHandler<Message>, TestHandler<Message>>("Other");
 
@@ -22,6 +25,8 @@ namespace Codestellation.Emisstar.Tests.LightInject
             var handlers = source.ResolveHandlersFor(typeof(Message));
 
             Assert.That(handlers.Count(), Is.EqualTo(2));
+
+            
         } 
     }
 }
