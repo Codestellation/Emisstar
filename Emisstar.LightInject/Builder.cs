@@ -6,7 +6,7 @@ namespace Codestellation.Emisstar.LightInject
 {
     public static class Builder
     {
-        public static void RegisterPublisher(this ServiceContainer self, Action<PublisherBuilder> build)
+        public static void RegisterPublisher(this IServiceRegistry self, Action<PublisherBuilder> build)
         {
             var builder = new PublisherBuilder(self);
 
@@ -18,10 +18,10 @@ namespace Codestellation.Emisstar.LightInject
 
     public class PublisherBuilder
     {
-        private readonly ServiceContainer _container;
+        private readonly IServiceRegistry _container;
         private readonly PublisherSettings _settings;
 
-        internal PublisherBuilder(ServiceContainer container)
+        internal PublisherBuilder(IServiceRegistry container)
         {
             _container = container;
             _settings = new PublisherSettings();
