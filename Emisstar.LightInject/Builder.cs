@@ -29,7 +29,7 @@ namespace Codestellation.Emisstar.LightInject
 
         internal void CompleteRegistration()
         {
-            _container.RegisterInstance(typeof (IServiceFactory), _container);
+            _container.Register(factory => factory);
             _container.RegisterInstance(_settings);
             _container.Register<IDispatchRule>(factory => new Rule(x => true), new PerContainerLifetime());
             _container.Register<IHandlerSource, LightInjectSource>(new PerContainerLifetime());
