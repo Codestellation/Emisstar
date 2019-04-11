@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
-using Codestellation.Emisstar.DarkFlowIntegration;
 using Codestellation.Emisstar.Impl;
 
 namespace Codestellation.Emisstar.CastleWindsor.Facility
@@ -49,19 +48,6 @@ namespace Codestellation.Emisstar.CastleWindsor.Facility
                     .For<ISubscriber, IHandlerSource>()
                     .ImplementedBy<SimpleSubscriber>()
                     .LifestyleSingleton());
-        }
-
-        public EmisstarFacility UseDarkFlowDispatcher()
-        {
-            var asmBuilder = new IntegrationAssemblyBuilder();
-
-            _dispatcherRegistrations.Add(
-                Component
-                    .For<IDispatcher>()
-                    .ImplementedBy(asmBuilder.GeneratedDispatcherType)
-                    .LifestyleSingleton());
-
-            return this;
         }
 
         public EmisstarFacility UseSimpleDispatcher(params IDispatchRule[] rules)

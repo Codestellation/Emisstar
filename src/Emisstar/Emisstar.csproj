@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Codestellation Team</Authors>
+    <Company>Codestellation</Company>
+    <Description>Simple extensible event publisher</Description>
+    <Copyright>Copyright (c) Codestellation 2019</Copyright>
+    <PackageId>Codestellation.Emisstar</PackageId>
+    <PackageProjectUrl>https://github.com/codestellation/emisstar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/codestellation/emisstar</RepositoryUrl>
+    <AssemblyName>Codestellation.Emisstar</AssemblyName>
+    <RootNamespace>Codestellation.Emisstar</RootNamespace>
+    <NoWarn>7035;1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Codestellation.Cepheid" Version="0.1.2" PrivateAssets="All" />
+    <PackageReference Include="NLog" Version="4.6.2" />
+  </ItemGroup>
+
+</Project>

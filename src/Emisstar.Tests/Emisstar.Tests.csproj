@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Codestellation.Emisstar.Tests</AssemblyName>
+    <RootNamespace>Codestellation.Emisstar.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <NoWarn>7035</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="SharpTestsEx" Version="2.0.0" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Emisstar.CastleWindsor\Emisstar.CastleWindsor.csproj" />
+    <ProjectReference Include="..\Emisstar.LightInject\Emisstar.LightInject.csproj" />
+    <ProjectReference Include="..\Emisstar\Emisstar.csproj" />
+  </ItemGroup>
+
+</Project>

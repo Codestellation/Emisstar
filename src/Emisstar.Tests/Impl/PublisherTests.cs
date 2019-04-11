@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Codestellation.Emisstar.Impl;
 using NUnit.Framework;
 using Shouldly;
@@ -25,17 +25,15 @@ namespace Codestellation.Emisstar.Tests.Impl
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void Constructor_will_throw_if_dispatcher_is_null()
         {
-            new Publisher(new SimpleSubscriber(), new IDispatcher[] {null});
+            Assert.Throws<ArgumentException>(()=> new Publisher(new SimpleSubscriber(), new IDispatcher[] { null }));
         }
         
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_will_throw_if_handler_source_is_null()
         {
-            new Publisher(null, new IDispatcher[] {new SimpleDispatcher()});
+            Assert.Throws<ArgumentNullException>(() => new Publisher(null, new IDispatcher[] {new SimpleDispatcher()}));
         }
 
         [Test]

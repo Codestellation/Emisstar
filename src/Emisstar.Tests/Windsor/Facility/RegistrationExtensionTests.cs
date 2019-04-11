@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Reflection;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Codestellation.Emisstar.CastleWindsor.Facility;
@@ -18,7 +19,7 @@ namespace Codestellation.Emisstar.Tests.Windsor.Facility
             var windsor = new WindsorContainer();
             windsor.Register(
                 Classes
-                    .FromThisAssembly()
+                    .FromAssemblyContaining(GetType())
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsHandler())
                     .WithServiceAllHandlers());

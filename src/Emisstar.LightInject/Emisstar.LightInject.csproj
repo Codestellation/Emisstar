@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Codestellation Team</Authors>
+    <Company>Codestellation</Company>
+    <Description>LigthtInject integration for Codestellation Emisstar</Description>
+    <Copyright>Copyright (c) Codestellation 2019</Copyright>
+    <PackageId>Codestellation.Emisstar.LightInject</PackageId>
+    <PackageProjectUrl>https://github.com/codestellation/emisstar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/codestellation/emisstar</RepositoryUrl>
+    <AssemblyName>Codestellation.Emisstar.LightInject</AssemblyName>
+    <RootNamespace>Codestellation.Emisstar.LightInject</RootNamespace>
+    <NoWarn>7035;1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LightInject" Version="5.4.0" />
+    <PackageReference Include="Codestellation.Cepheid" Version="0.1.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Emisstar\Emisstar.csproj" />
+  </ItemGroup>
+
+</Project>
