@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="LightInject" Version="5.4.0" />
-    <PackageReference Include="Codestellation.Cepheid" Version="0.1.2" PrivateAssets="All" />
+    <PackageReference Include="Codestellation.Cepheid" Version="0.1.4" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
